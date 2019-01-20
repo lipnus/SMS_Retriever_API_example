@@ -33,9 +33,15 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
         mContext = this;
         smsReceiver = new SmsReceiver();
-        setLayout();
+        initLayout();
+
+        //11자리 해쉬코드값 구하기
+        Util.getAppSignatures(this);
     }
 
+
+    /** mRetrieverClient 선언/실행
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -48,25 +54,34 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
             public void onSuccess(Void aVoid) {
                 IntentFilter intentFilter = new IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION);
                 registerReceiver(smsReceiver, intentFilter);
-                Log.e("testest", "onSuccess");
+                Log.d("SSS", "onSuccess");
             }
         });
 
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("testest", "onFailure" + e.toString());
+                Log.e("SSS", "onFailure" + e.toString());
             }
         });
-
     }
 
+
+    /** mRetrieverClient 종료
+     */
     @Override
     protected void onStop() {
         super.onStop();
 
-        this.unregisterReceiver(smsReceiver);
+        try {
+            this.unregisterReceiver(smsReceiver);
+        }catch (Exception e){
+        }
+
     }
+
+
+
 
     @Override
     public void onOTPReceived(String msg) {
@@ -79,8 +94,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     }
 
 
-
-    private void setLayout(){
+    private void initLayout(){
 
         //Button
         phone_selector_btn = findViewById(R.id.btn_phone_selector);
